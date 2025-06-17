@@ -15,7 +15,7 @@ This means two separate repositories:
 * One that does the actual research -- the simulations, real data analyses, etc. I called this `res`.
 * One that turns those research results into a polished final product. I called this `man` for manuscript, but it could be a presentation or website or something also.
 
-The two repositories are linked through something I'll call the `cache`: this is where the time-consuming results are saved. The `res` repo needs to be able to write to `cache`, and the `man` repo needs to be able to read from `cache`. The directory could be located anywhere:
+The two repositories are linked through something I'll call the `cache`: this is where the time-consuming results are saved. The directory could be located anywhere, provided that `res` can write to `cache`, and `man` can read from `cache`:
 
 * AWS
 * RDSS
