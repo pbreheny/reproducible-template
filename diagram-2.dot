@@ -1,0 +1,24 @@
+digraph G {
+    rankdir=LR;
+    
+    node [
+        shape=box,
+        style="rounded,filled",
+        fillcolor="#eeeeee",
+        color="#cccccc",
+        fontname="Helvetica",
+        fontsize=12
+    ];
+
+    edge [
+        fontname="Helvetica",
+        fontsize=10
+    ];
+
+    START [style=invis];
+    A [label="Cache"];
+    B [label="Final Product"];
+
+    A -> B [label="man"];
+    START -> A [label="res"];
+}

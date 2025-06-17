@@ -1,0 +1,56 @@
+import re
+from pathlib import Path
+from glob import glob
+
+# Get all R script names without extensions
+tab_files = [Path(f).stem for f in glob('tab/*.R')]
+fig_files = [Path(f).stem for f in glob('fig/*.R')]
+exclude = {'setup'}
+
+# Function to determine output file extensions
+def get_ext(f):
+    pattern = r'\w+\((["\'])([^\'"]+)\1.*\)'
+    with open(f) as file:
+        for line in file:
+            if line.strip().startswith(('pdf(', 'png(')):  # Check for multiple formats
+                match = re.search(pattern, line)
+                if match:
+                    return Path(match.group(2)).suffix.strip('.')
+    print(f'No match for {f}')
+    return None
+
+# Create dictionary to look up extensions
+fig_ext = {stem: get_ext(f'fig/{stem}.R') for stem in fig_files if stem not in exclude}
+
+rule all:
+    input:
+        'my-paper.pdf'
+
+rule main:
+    input:
+        'abstract.tex',
+        'my-paper.tex',
+        'main.tex',
+        'supp.tex',
+        expand("tab/{tab}.tex", tab=tab_files),
+        [f"fig/{stem}.{fig_ext[stem]}" for stem in fig_files if stem not in exclude]
+    output:
+        'my-paper.pdf'
+    shell:
+        'cleantex -btq my-paper.tex'
+        
+rule figs:
+    input:
+        lambda wildcards: f"fig/{Path(wildcards.output).stem}.R"
+    output:
+        'fig/{output}'
+    shell:
+        'Rscript {input} > /dev/null 2>&1'
+
+rule tabs:
+    input:
+        'tab/{tab}.R'
+    output:
+        'tab/{tab}.tex'
+    shell:
+        'Rscript {input} > /dev/null 2>&1'
