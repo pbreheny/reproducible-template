@@ -1,0 +1,58 @@
+#!/usr/bin/env Rscript
+suppressMessages(library(docopt))
+doc <- "Evaluate power and type 1 error rate for t-test
+
+Variances and samples sizes are unequal, but total sample size is always 20
+
+Usage: sim --out=<out> [options]
+
+--out=<out>       Where to save file
+--reps=<reps>     Replications [default: 1000]
+--delta=<delta>   Difference in means [default: 1]
+"
+
+devtools::load_all(quiet=TRUE)
+
+# Define options
+if (!interactive()) {
+  arg <- docopt(doc) |> lapply(eval_args)
+} else {
+  arg <- list(n_rep = 10, delta = 2)
+}
+opt <- list(
+  equal_var = c(TRUE, FALSE),
+  rep = 1:arg$reps,
+  sd1 = 1,
+  sd2 = 1:3,
+  n1 = seq(2, 18, 2),
+  delta = c(0, arg$delta)
+)
+
+# Set up results frame
+out <- expand.grid(opt)
+out$n2 <- 20 - out$n1
+out$p = NA_real_
+out$width = NA_real_
+
+# Loop
+pb <- progress::progress_bar$new(total = nrow(out))
+for (i in 1:nrow(out)) {
+  o <- out[i,]
+  
+  # Generate
+  if (i == 1 || o$rep != out$rep[i-1]) {
+    dat <- do.call(generate, o)
+  }
+
+  # Analyze
+  res <- t.test(dat$x, dat$y, var.equal = o$equal_var)
+
+  # Summarize
+  out$p[i] <- res$p.value
+  out$width[i] <-   res$conf.int[2] - res$conf.int[1]
+
+  pb$tick()
+}
+
+# Save
+write.csv(out, arg$out, row.names = FALSE)

@@ -1,0 +1,15 @@
+rule ex_1:
+    input: "scripts/ex-1.r"
+    output: "cache/ex-1.csv"
+    shell: "Rscript {input}"
+
+rule ex_2:
+    input: "scripts/sim"
+    output:
+        "cache/ex-100-1.csv",
+        "cache/ex-100-2.csv"
+    shell:
+        """
+        Rscript {input} --out=cache/ex-100-1.csv --reps=100 --delta=1
+        Rscript {input} --out=cache/ex-100-2.csv --reps=100 --delta=2
+        """

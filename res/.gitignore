@@ -8,3 +8,4 @@ explore/*.txt
 docs/
 man/
 NAMESPACE
+.snakemake
