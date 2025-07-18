@@ -10,6 +10,6 @@ rule ex_2:
         "cache/ex-100-2.csv"
     shell:
         """
-        Rscript {input} --out=cache/ex-100-1.csv --reps=100 --delta=1
-        Rscript {input} --out=cache/ex-100-2.csv --reps=100 --delta=2
+        {input} --out=cache/ex-100-1.csv --reps=100 --delta=1
+        {input} --out=cache/ex-100-2.csv --reps=100 --delta=2
         """
