@@ -23,6 +23,7 @@ On my (Logan Harris) office computer, I already had MikTex installed. However, w
 1. Ctrl + Shift + p
 2. Type: "Preferences: Open User Settings (JSON)" 
 3. Add / edit settings.json (mine was just {}) with the below information, replacing USER with your appropriate username:
+```
 {
     "latex-workshop.latex.tools": [
     {
@@ -55,4 +56,5 @@ On my (Logan Harris) office computer, I already had MikTex installed. However, w
     }
     ],
 }
+```
 4. Save and retry step 4 above.
